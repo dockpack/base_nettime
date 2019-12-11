@@ -1,0 +1,43 @@
+---
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
+
+- name: Ensure packages are installed
+  yum:
+    name: "{{ nettime_packages }}"
+    state: installed
+
+- name: Set timezone
+  timezone:
+    name: "{{ timezone | default('UTC') }}"
+  notify: "restart nettime{{ ansible_distribution_major_version }}"
+
+- name: Configure nettime
+  template:
+    src: chrony.conf.j2
+    dest: /etc/chronyls .conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: "restart nettime{{ ansible_distribution_major_version }}"
+
+- name: Set drift
+  file:
+    path:  /var/lib/chrony/drift
+    owner: chrony
+    group: chrony
+    state: touch
+
+- name: Enable systemd-timedated
+  when: ansible_distribution_major_version|int > 6
+  systemd:
+    name: systemd-timedated
+    enabled: true
+  notify: "restart nettime{{ ansible_distribution_major_version }}"
+
+- name: Enable chronyd
+  when: ansible_distribution_major_version|int == 6
+  service:
+    name: chronyd
+    enabled: true
+  notify: "restart nettime{{ ansible_distribution_major_version }}"
