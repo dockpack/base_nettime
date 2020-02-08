@@ -3,6 +3,7 @@
 # Tests need distributed to the appropriate ansible host/groups
 # prior to execution by `goss validate`.
 
+# yamllint disable rule:line-length
 - name: Verify
   hosts: all
   become: true

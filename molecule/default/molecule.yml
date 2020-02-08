@@ -13,10 +13,10 @@ verifier:
 platforms:
   - name: base-nettime-centos6
     image: centos:6
-    privileged: True
+    privileged: true
   - name: base-nettime-centos7
     image: milcom/centos7-systemd
-    privileged: True
+    privileged: true
 provisioner:
   name: ansible
   config_options:

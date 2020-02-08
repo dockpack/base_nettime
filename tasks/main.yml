@@ -1,5 +1,6 @@
 ---
 - name: Include OS-specific variables.
+  # yamllint disable-line rule:line-length
   include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
 
 - name: Ensure packages are installed
@@ -23,7 +24,7 @@
 
 - name: Set drift
   file:
-    path:  /var/lib/chrony/drift
+    path: /var/lib/chrony/drift
     owner: chrony
     group: chrony
     state: touch
