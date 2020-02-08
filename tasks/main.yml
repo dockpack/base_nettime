@@ -23,11 +23,11 @@
   notify: "restart nettime{{ ansible_distribution_major_version }}"
 
 - name: Set drift
-  file:
-    path: /var/lib/chrony/drift
+  copy:
+    content: ''
+    dest: /var/lib/chrony/drift
     owner: chrony
     group: chrony
-    state: touch
 
 - name: Enable systemd-timedated
   when: ansible_distribution_major_version|int > 6
