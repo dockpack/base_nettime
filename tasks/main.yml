@@ -28,6 +28,7 @@
     dest: /var/lib/chrony/drift
     owner: chrony
     group: chrony
+    mode: 0640
 
 - name: Enable systemd-timedated
   when: ansible_distribution_major_version|int > 6

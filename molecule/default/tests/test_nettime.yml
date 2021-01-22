@@ -18,7 +18,7 @@ file:
     contains: []
   /var/lib/chrony/drift:
     exists: true
-    mode: "0644"
+    mode: "0640"
     owner: chrony
     group: chrony
     filetype: file
