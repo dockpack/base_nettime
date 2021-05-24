@@ -16,7 +16,7 @@
 - name: Configure nettime
   template:
     src: chrony.conf.j2
-    dest: /etc/chronyls .conf
+    dest: /etc/chrony.conf
     owner: root
     group: root
     mode: 0644
