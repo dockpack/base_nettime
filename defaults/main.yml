@@ -4,6 +4,7 @@ timezone: UTC
 local_network: '192.168.0.0/16'
 # use nearby ntp servers if available
 ntp_servers:
+  - 0.pool.ntp.org
   - 1.pool.ntp.org
-  - ntp0.nl.uu.net
-  - ntp0.fau.de
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
