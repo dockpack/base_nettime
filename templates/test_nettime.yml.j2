@@ -7,11 +7,13 @@ command:
     stdout:
       - 200 OK
     stderr: []
+  chronyc sources:
+    exit-status: 0
+    stdout:
+      - "210 Number of sources = {{ ntp_servers|length }}"
   timedatectl:
     exit-status: 0
     stdout:
-      - "{{ nettime_enabled }}"
-      - "{{ nettime_synced }}"
       - 'RTC in local TZ: no'
     stderr: []
 file:
