@@ -3,43 +3,73 @@
   # yamllint disable-line rule:line-length
   include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
 
+- name: Update repositories cache
+  when: ansible_os_family == 'Debian'
+  apt:
+    update_cache: true
+
 - name: Ensure packages are installed
-  yum:
+  package:
     name: "{{ nettime_packages }}"
-    state: installed
-
-- name: Set timezone
-  timezone:
-    name: "{{ timezone | default('UTC') }}"
-  notify: "restart nettime{{ ansible_distribution_major_version }}"
-
-- name: Configure nettime
-  template:
-    src: chrony.conf.j2
-    dest: /etc/chrony.conf
-    owner: root
-    group: root
-    mode: 0644
-  notify: "restart nettime{{ ansible_distribution_major_version }}"
-
-- name: Set drift
-  copy:
-    content: ''
-    dest: /var/lib/chrony/drift
-    owner: chrony
-    group: chrony
-    mode: 0640
+    state: present
+  register: nettime_package
+  ignore_errors: true
 
 - name: Enable systemd-timedated
-  when: ansible_distribution_major_version|int > 6
+  when: nettime_package.failed
   systemd:
     name: systemd-timedated
     enabled: true
-  notify: "restart nettime{{ ansible_distribution_major_version }}"
+  notify: "restart timedated"
+
+- name: Set timezone
+  when: ansible_os_family == 'RedHat'
+  timezone:
+    name: "{{ timezone | default('UTC') }}"
+  notify: restart chronyd
+
+- name: Use RTC time in UTC not local time zone
+  command: timedatectl set-local-rtc 0
+
+- name: Configure chrony
+  template:
+    src: chrony.conf.j2
+    dest: "{{ nettime_config }}"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart chronyd
+
+- name: Set drift
+  file:
+    path: "{{ nettime_driftfile }}"
+    owner: "{{ nettime_user }}"
+    group: "{{ nettime_group }}"
+    mode: 0640
+    state: touch
 
 - name: Enable chronyd
-  when: ansible_distribution_major_version|int == 6
+  when: not nettime_package.failed
   service:
-    name: chronyd
+    name: "{{ nettime_service }}"
     enabled: true
-  notify: "restart nettime{{ ansible_distribution_major_version }}"
+    state: started
+
+- name: Force time synchronization
+  command: chronyc -a 'burst 4/4'
+
+- name: ensure goss directory exists
+  file:
+    path: /etc/goss.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+
+- name: copy goss tests template
+  template:
+    src: test_nettime.yml.j2
+    dest: /etc/goss.d/test_nettime.yml
+    owner: root
+    group: root
+    mode: 0644

@@ -1,14 +1,14 @@
 ---
 
-- name: restart nettime7
-  systemd:
-    name: systemd-timedated
-    daemon_reload: true
+- name: restart chronyd
+  service:
+    name: "{{ nettime_service }}"
     enabled: true
     state: started
 
-- name: restart nettime6
-  service:
-    name: chronyd
+- name: restart timedated
+  systemd:
+    name: systemd-timedated
+    daemon_reload: true
     enabled: true
     state: started
