@@ -29,9 +29,10 @@
   notify: restart chronyd
 
 - name: Is RTC time in local time zone
-  shell: "set -o pipefail;timedatectl|grep -c 'RTC in local TZ: yes'"
-  changed_when: false
+  shell: "timedatectl|grep -c 'RTC in local TZ: yes'"
   register: rtc_timezone
+  changed_when: false
+  failed_when: rtc_timezone.rc not in [0,1]
 
 - name: Use RTC time in UTC not local time zone
   when: rtc_timezone.stdout|int == 1

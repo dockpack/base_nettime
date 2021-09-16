@@ -1,0 +1,3 @@
+---
+skip_list:
+  - '306'  # Shells that use pipes should set the pipefail option
