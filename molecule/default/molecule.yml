@@ -10,7 +10,28 @@ lint: |
   ansible-lint
 platforms:
   - name: base-nettime-centos7
-    image: milcom/centos7-systemd
+    image: centos:7
+    command: /sbin/init
+    capabilities:
+      - CAP_SYS_TIME
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: base-nettime-centos8
+    image: centos:8
+    command: /sbin/init
+    capabilities:
+      - CAP_SYS_TIME
+    tmpfs:
+      - /run
+      - /tmp
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: base-nettime-debian10
+    image: dokken/debian-10
+    command: /lib/systemd/systemd
     privileged: true
 provisioner:
   name: ansible
