@@ -55,6 +55,7 @@
     group: "{{ nettime_group }}"
     mode: 0640
     state: touch
+  changed_when: false
 
 - name: Enable chronyd
   when: not nettime_package.failed
