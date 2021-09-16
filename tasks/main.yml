@@ -28,8 +28,15 @@
     name: "{{ timezone | default('UTC') }}"
   notify: restart chronyd
 
+- name: Is RTC time in local time zone
+  shell: "set -o pipefail;timedatectl|grep -c 'RTC in local TZ: yes'"
+  changed_when: false
+  register: rtc_timezone
+
 - name: Use RTC time in UTC not local time zone
+  when: rtc_timezone.stdout|int == 1
   command: timedatectl set-local-rtc 0
+  changed_when: true
 
 - name: Configure chrony
   template:
@@ -57,6 +64,7 @@
 
 - name: Force time synchronization
   command: chronyc -a 'burst 4/4'
+  changed_when: false
 
 - name: ensure goss directory exists
   file:
