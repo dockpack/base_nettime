@@ -16,8 +16,15 @@ galaxy_info:
       versions:
         - 7
         - 8
+    - name: Debian
+      versions:
+        - buster
   galaxy_tags:
     - system
     - compliance
+    - ntp
+    - ntpd
+    - chrony
+    - time
 
 dependencies: []

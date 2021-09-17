@@ -10,7 +10,7 @@ command:
   chronyc sources:
     exit-status: 0
     stdout:
-      - "210 Number of sources = {{ ntp_servers|length }}"
+      - "210 Number of sources = {{ ntp_servers|length + ntp_peers|length + ntp_pools|length}}"
   timedatectl:
     exit-status: 0
     stdout:
