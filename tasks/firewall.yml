@@ -1,0 +1,30 @@
+---
+
+- name: Ensure firewall is installed
+  package:
+    name: "{{ nettime_firewall }}"
+    state: present
+
+- name: Ensure firewall is running
+  systemd:
+    name: "{{ nettime_firewall }}"
+    state: started
+  changed_when: false
+
+- name: Enable udp/123 in ufw
+  when:
+    - ansible_os_family == 'Debian'
+    - net_allow|length > 0
+  ufw:
+    rule: allow
+    port: '123'
+    proto: udp
+
+- name: Enable udp/123 in firewalld
+  when:
+    - ansible_os_family == 'RedHat'
+    - net_allow|length > 0
+  firewalld:
+    service: ntp
+    permanent: true
+    state: enabled

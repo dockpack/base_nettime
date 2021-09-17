@@ -9,5 +9,6 @@ nettime_enabled: 'NTP service: active'
 nettime_synced: 'System clock synchronized: yes'
 nettime_packages:
   - chrony
+firewall_package:
   - ufw
 nettime_firewall: ufw

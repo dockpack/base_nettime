@@ -14,10 +14,14 @@ ntp_servers:
 # sync time with LAN peers
 ntp_peers: []
 
-# allow access from these subnets in firewall and chrony
-net_allow: []
+# allow access from these subnets
 #  - '192.168.0.0/16'
 
-# deny access from these subnets in firewall and chrony
+# deny access from these subnets
 net_deny: []
+
+# unique integer for peer authentication
 nettime_keyid: 123
+
+# manage firewall of do it yourself for use as server
+manage_firewall: true
