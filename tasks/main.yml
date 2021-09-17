@@ -15,6 +15,10 @@
   register: nettime_package
   ignore_errors: true
 
+- name: manage firewall
+  when: manage_firewall
+  include_tasks: firewall.yml
+
 - name: Enable systemd-timedated
   when: nettime_package.failed
   systemd:
@@ -114,29 +118,6 @@
   command: chronyc -a 'burst 4/4'
   changed_when: false
 
-- name: Ensure firewall is running
-  systemd:
-    name: "{{ nettime_firewall }}"
-    state: started
-  changed_when: false
-
-- name: Enable udp/123 in ufw
-  when:
-    - ansible_os_family == 'Debian'
-    - net_allow|length > 0
-  ufw:
-    rule: allow
-    port: '123'
-    proto: udp
-
-- name: Enable udp/123 in firewalld
-  when:
-    - ansible_os_family == 'RedHat'
-    - net_allow|length > 0
-  firewalld:
-    service: ntp
-    permanent: true
-    state: enabled
 
 - name: ensure goss directory exists
   file:

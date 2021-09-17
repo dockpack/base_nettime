@@ -10,5 +10,6 @@ nettime_synced: 'System clock synchronized: yes'
 nettime_packages:
   - chrony
   - util-linux-ng
+firewall_package:
   - firewalld
 nettime_firewall: firewalld

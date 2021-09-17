@@ -49,14 +49,14 @@ bindcmdaddress ::1
 #minsources 2
 
 # Allow NTP client access from these networks.
-{% if net_allow|length > 0 %}
+{% if net_allow is defined and net_allow|length > 0 %}
 {% for cidr in net_allow %}
 allow {{ cidr }}
 {% endfor %}
 {% endif %}
 
 # Deny NTP requests from these networks
-{% if net_deny|length > 0 %}
+{% if net_deny is defined and net_deny|length > 0 %}
 {% for cidr in net_deny %}
 deny  {{ cidr }}
 {% endfor %}
