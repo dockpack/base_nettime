@@ -1,10 +1,25 @@
 ---
 
 timezone: UTC
-local_network: '192.168.0.0/16'
+
 # use nearby ntp servers if available
+ntp_zone: .nl
+ntp_pools: []
 ntp_servers:
-  - 0.pool.ntp.org
-  - 1.pool.ntp.org
-  - 2.pool.ntp.org
-  - 3.pool.ntp.org
+  - "0{{ ntp_zone if ntp_zone else '' }}.pool.ntp.org"
+  - "1{{ ntp_zone if ntp_zone else '' }}.pool.ntp.org"
+  - "2{{ ntp_zone if ntp_zone else '' }}.pool.ntp.org"
+  - "3{{ ntp_zone if ntp_zone else '' }}.pool.ntp.org"
+
+# sync time with LAN peers
+ntp_peers:
+  - 172.17.0.2
+  - 172.17.0.3
+  - 172.17.0.4
+
+# allow access from these subnets in firewall and chrony
+net_allow:
+  - '192.168.0.0/16'
+# deny access from these subnets in firewall and chrony
+net_deny: []
+nettime_keyid: 123

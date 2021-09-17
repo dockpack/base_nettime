@@ -1,10 +1,25 @@
 # Use public servers from the pool.ntp.org project.
 # Please consider joining the pool (http://www.pool.ntp.org/join.html).
+{% if ntp_pools|length > 0 %}
+{% for pool in ntp_pools %}
+pool {{ pool }} iburst
+{% endfor %}
+{% endif %}
 
-# NTP server pool, use 3 minimally
+# List of NTP servers to use
+# NTP servers, use 3 minimally
+{% if ntp_servers|length > 0 %}
 {% for server in ntp_servers %}
 server {{ server }} iburst maxpoll 10
 {% endfor %}
+{% endif %}
+
+# List of NTP peers to use
+{% if ntp_peers|length > 0 %}
+{% for peer in ntp_peers %}
+peer {{ peer }} key {{ nettime_keyid|default('123') }}
+{% endfor %}
+{% endif %}
 
 # Record the rate at which the system clock gains/losses time.
 driftfile {{ nettime_driftfile }}
@@ -13,8 +28,18 @@ driftfile {{ nettime_driftfile }}
 # if its offset is larger than 1 second.
 makestep 1 -1
 
+# Keep UTC date and time for RTC
+rtconutc
+
 # Enable kernel synchronization of the real-time clock (RTC).
 rtcsync
+
+# Leap second
+leapsectz right/UTC
+
+# Listen for commands only on localhost
+bindcmdaddress 127.0.0.1
+bindcmdaddress ::1
 
 # Enable hardware timestamping on all interfaces that support it.
 #hwtimestamp *
@@ -23,14 +48,25 @@ rtcsync
 # the system clock.
 #minsources 2
 
-# Allow NTP client access from local network.
-allow {{ local_network }}
+# Allow NTP client access from these networks.
+{% if net_allow|length > 0 %}
+{% for cidr in net_allow %}
+allow {{ cidr }}
+{% endfor %}
+{% endif %}
+
+# Deny NTP requests from these networks
+{% if net_deny|length > 0 %}
+{% for cidr in net_deny %}
+deny  {{ cidr }}
+{% endfor %}
+{% endif %}
 
 # Serve time even if not synchronized to a time source.
 local stratum 10
 
 # Specify file containing keys for NTP authentication.
-#keyfile /etc/chrony.keys
+keyfile "{{ nettime_keyfile }}"
 
 # Specify directory for log files.
 logdir /var/log/chrony

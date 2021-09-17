@@ -22,6 +22,53 @@
     enabled: true
   notify: "restart timedated"
 
+- name: Disable conflicting services
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+  register: service_result
+  failed_when:
+    - service_result is failed
+    - ('Could not find' not in service_result.msg)
+  loop:
+    - systemd-timesyncd
+    - ntpd
+
+- name: Check if key is configured
+  command: "grep '^{{ nettime_keyid }} ' {{ nettime_keyfile }}"
+  register: nettime_keyed
+  changed_when: false
+  failed_when: false
+
+- name: Set chrony_key
+  when: nettime_keyed.rc == 0
+  set_fact:
+    chrony_key: "{{ nettime_keyed.stdout }}"
+
+- name: Generate a key
+  when: nettime_keyed.rc == 1
+  run_once: true
+  command: "chronyc keygen {{ nettime_keyid }}"
+  register: keygen_result
+  changed_when: false
+
+- name: Set chrony_key
+  when: nettime_keyed.rc == 1
+  set_fact:
+    chrony_key: "{{ keygen_result.stdout }}"
+
+- name: Configure chrony key
+  lineinfile:
+    path: "{{ nettime_keyfile }}"
+    regexp: '^{{ nettime_keyid }} '
+    line: "{{ chrony_key }}"
+    state: present
+    owner: root
+    group: "{{ nettime_group }}"
+    mode: 0640
+  notify: restart chronyd
+
 - name: Set timezone
   when: ansible_os_family == 'RedHat'
   timezone:
@@ -58,8 +105,7 @@
   changed_when: false
 
 - name: Enable chronyd
-  when: not nettime_package.failed
-  service:
+  systemd:
     name: "{{ nettime_service }}"
     enabled: true
     state: started
@@ -67,6 +113,30 @@
 - name: Force time synchronization
   command: chronyc -a 'burst 4/4'
   changed_when: false
+
+- name: Ensure firewall is running
+  systemd:
+    name: "{{ nettime_firewall }}"
+    state: started
+  changed_when: false
+
+- name: Enable udp/123 in ufw
+  when:
+    - ansible_os_family == 'Debian'
+    - net_allow|length > 0
+  ufw:
+    rule: allow
+    port: '123'
+    proto: udp
+
+- name: Enable udp/123 in firewalld
+  when:
+    - ansible_os_family == 'RedHat'
+    - net_allow|length > 0
+  firewalld:
+    service: ntp
+    permanent: true
+    state: enabled
 
 - name: ensure goss directory exists
   file:
