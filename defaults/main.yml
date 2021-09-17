@@ -12,14 +12,12 @@ ntp_servers:
   - "3{{ ntp_zone if ntp_zone else '' }}.pool.ntp.org"
 
 # sync time with LAN peers
-ntp_peers:
-  - 172.17.0.2
-  - 172.17.0.3
-  - 172.17.0.4
+ntp_peers: []
 
 # allow access from these subnets in firewall and chrony
-net_allow:
-  - '192.168.0.0/16'
+net_allow: []
+#  - '192.168.0.0/16'
+
 # deny access from these subnets in firewall and chrony
 net_deny: []
 nettime_keyid: 123
