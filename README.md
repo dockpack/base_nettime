@@ -35,7 +35,7 @@ chronyc keygen <nettime_keyid> SHA256 256"
 Store the output as a var like this in a vault file:
 
 ```yaml
-chrony_key: '1234 SHA256 HEX:DD4E59D2CAE16FFCEBF23D67201814A2FA63251E1B23A1AF3A99203121807C6C
+chrony_key: '1234 SHA256 HEX:DD4E59D2CAE16FFCEBF23D67201814A2FA63251E1B23A1AF3A99203121807C6C'
 ```
 
 **NOTE**: firewalld or ufw will be installed if `manage_firewall` is true
