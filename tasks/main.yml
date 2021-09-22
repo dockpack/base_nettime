@@ -39,29 +39,6 @@
     - systemd-timesyncd
     - ntpd
 
-- name: Check if key is configured
-  command: "grep '^{{ nettime_keyid }} ' {{ nettime_keyfile }}"
-  register: nettime_keyed
-  changed_when: false
-  failed_when: false
-
-- name: Set chrony_key
-  when: nettime_keyed.rc == 0
-  set_fact:
-    chrony_key: "{{ nettime_keyed.stdout }}"
-
-- name: Generate a sha256 key, if needed
-  when: nettime_keyed.rc == 1
-  run_once: true
-  command: "chronyc keygen {{ nettime_keyid }} SHA256 256"
-  register: keygen_result
-  changed_when: false
-
-- name: Set chrony_key
-  when: nettime_keyed.rc == 1
-  set_fact:
-    chrony_key: "{{ keygen_result.stdout }}"
-
 - name: Configure chrony key
   lineinfile:
     path: "{{ nettime_keyfile }}"
@@ -113,11 +90,6 @@
     name: "{{ nettime_service }}"
     enabled: true
     state: started
-
-- name: Force time synchronization
-  command: chronyc -a 'burst 4/4'
-  changed_when: false
-
 
 - name: ensure goss directory exists
   file:
