@@ -2,6 +2,7 @@
 - hosts: all
   vars:
     manage_firewall: false
+    chrony_key: '1234 SHA256 HEX:DD4E59D2CAE16FFCEBF23D67201814A2FA63251E1B23A1AF3A99203121807C6C
 
   roles:
     - role: base_nettime
