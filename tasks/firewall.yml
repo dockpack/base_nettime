@@ -26,5 +26,6 @@
     - net_allow|length > 0
   firewalld:
     service: ntp
+    immediate: true
     permanent: true
     state: enabled
