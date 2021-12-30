@@ -8,6 +8,7 @@ lint: |
   set -e
   yamllint .
   ansible-lint
+  ansible-later
 platforms:
   - name: base-nettime-centos7
     image: centos:7
@@ -35,5 +36,9 @@ platforms:
     privileged: true
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      executable: bash
 verifier:
   name: ansible
+...
