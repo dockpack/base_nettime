@@ -24,7 +24,7 @@
   systemd:
     name: systemd-timedated
     enabled: true
-  notify: "restart timedated"
+  notify: "Restart timedated"
 
 - name: Disable conflicting services
   systemd:
@@ -48,16 +48,18 @@
     owner: root
     group: "{{ nettime_group }}"
     mode: 0640
-  notify: restart chronyd
+  notify: Restart chronyd
 
 - name: Set timezone
   when: ansible_os_family == 'RedHat'
   timezone:
     name: "{{ timezone | default('UTC') }}"
-  notify: restart chronyd
+  notify: Restart chronyd
 
 - name: Is RTC time in local time zone
-  shell: "timedatectl|grep -c 'RTC in local TZ: yes'"
+  shell: |
+    set -o pipefail
+    timedatectl|grep -c 'RTC in local TZ: yes'
   register: rtc_timezone
   changed_when: false
   failed_when: rtc_timezone.rc not in [0,1]
@@ -74,7 +76,7 @@
     owner: root
     group: root
     mode: 0644
-  notify: restart chronyd
+  notify: Restart chronyd
 
 - name: Set drift
   file:
@@ -91,7 +93,7 @@
     enabled: true
     state: started
 
-- name: ensure goss directory exists
+- name: Ensure goss directory exists
   file:
     path: /etc/goss.d
     state: directory
@@ -99,10 +101,11 @@
     group: root
     mode: 0700
 
-- name: copy goss tests template
+- name: Copy goss tests template
   template:
     src: test_nettime.yml.j2
     dest: /etc/goss.d/test_nettime.yml
     owner: root
     group: root
     mode: 0644
+...
