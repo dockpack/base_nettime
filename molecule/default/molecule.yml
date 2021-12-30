@@ -38,6 +38,7 @@ provisioner:
   name: ansible
   config_options:
     defaults:
+      stdout_callback: yaml
       executable: /bin/bash
 verifier:
   name: ansible
