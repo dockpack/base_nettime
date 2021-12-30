@@ -1,5 +1,5 @@
 ---
-
+# Standards: 0.2
 galaxy_info:
   role_name: base_nettime
   namespace: dockpack
@@ -28,3 +28,4 @@ galaxy_info:
     - time
 
 dependencies: []
+...
