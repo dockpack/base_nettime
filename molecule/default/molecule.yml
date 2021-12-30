@@ -38,7 +38,7 @@ provisioner:
   name: ansible
   config_options:
     defaults:
-      executable: bash
+      executable: /bin/bash
 verifier:
   name: ansible
 ...
