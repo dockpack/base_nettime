@@ -3,7 +3,7 @@ tox
 pipx
 attrs>=19.2.0
 sh==1.12.14
-ansible==2.9.20
+ansible==2.9.27
 molecule==3.2.3
 molecule-docker
 yamllint==1.26.1
