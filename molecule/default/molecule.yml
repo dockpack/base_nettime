@@ -21,7 +21,7 @@ platforms:
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
   - name: base-nettime-centos8
-    image: centos:8
+    image: quay.io/centos/centos:stream8
     command: /sbin/init
     capabilities:
       - CAP_SYS_TIME
@@ -30,6 +30,10 @@ platforms:
       - /tmp
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  - name: base-nettime-ubuntu-focal
+    image: dokken/ubuntu-20
+    command: /lib/systemd/systemd
+    privileged: true
   - name: base-nettime-debian10
     image: dokken/debian-10
     command: /lib/systemd/systemd
