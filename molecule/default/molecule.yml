@@ -34,6 +34,10 @@ platforms:
     image: dokken/debian-10
     command: /lib/systemd/systemd
     privileged: true
+  - name: base-nettime-debian11
+    image: dokken/debian-11
+    command: /lib/systemd/systemd
+    privileged: true
 provisioner:
   name: ansible
   config_options:
