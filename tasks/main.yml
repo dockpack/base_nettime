@@ -53,7 +53,6 @@
   notify: Restart chronyd
 
 - name: Set timezone
-  when: ansible_os_family == 'RedHat'
   timezone:
     name: "{{ timezone | default('UTC') }}"
   notify: Restart chronyd
