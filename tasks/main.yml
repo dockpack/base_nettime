@@ -92,7 +92,7 @@
   systemd:
     name: "{{ nettime_service }}"
     enabled: true
-    state: started
+  notify: Start chronyd
 
 - name: Ensure goss directory exists
   file:

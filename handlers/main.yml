@@ -6,6 +6,11 @@
     enabled: true
     state: restarted
 
+- name: Start chronyd
+  service:
+    name: "{{ nettime_service }}"
+    state: "{{ start_nettime_service }}"
+
 - name: Restart timedated
   systemd:
     name: systemd-timedated
