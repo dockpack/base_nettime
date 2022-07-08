@@ -26,4 +26,6 @@ nettime_keyid: 123
 
 # manage firewall of do it yourself for use as server
 manage_firewall: true
+
+start_nettime_service: true
 ...
