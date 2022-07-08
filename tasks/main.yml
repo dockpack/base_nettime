@@ -79,6 +79,16 @@
     mode: 0644
   notify: Restart chronyd
 
+- name: Manage daemon options
+  when:
+    - ansible_os_family == 'Debian'
+    - ansible_distibution_release >= 11
+  lineinfile:
+    path: /etc/default/chrony
+    regexp: '^DAEMON_OPTS='
+    line: 'DAEMON_OPTS=""'
+    state: present
+
 - name: Set drift
   file:
     path: "{{ nettime_driftfile }}"
