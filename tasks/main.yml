@@ -82,7 +82,7 @@
 - name: Manage daemon options
   when:
     - ansible_os_family == 'Debian'
-    - ansible_distibution_release >= 11
+    - ansible_distribution_release >= 11
   lineinfile:
     path: /etc/default/chrony
     regexp: '^DAEMON_OPTS='
