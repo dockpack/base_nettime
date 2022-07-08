@@ -1,11 +1,10 @@
 # these python extensions are for testing
-tox
-pipx
 attrs>=19.2.0
 sh==1.12.14
 ansible==2.9.27
 molecule==3.2.3
 molecule-docker
-yamllint==1.26.1
+yamllint==1.26.3
 ansible-lint==4.3.7
+ansible-later==1.4.0
 docker>=4.3.1
