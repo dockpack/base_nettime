@@ -38,9 +38,12 @@ rtcsync
 leapsectz right/UTC
 
 # Listen for commands only on localhost
+{% if net_allow is defined and net_allow|length > 0 %}
 bindcmdaddress 127.0.0.1
 bindcmdaddress ::1
-
+{% else %}
+cmdport 0
+{% endif %}
 # Enable hardware timestamping on all interfaces that support it.
 #hwtimestamp *
 
@@ -50,9 +53,12 @@ bindcmdaddress ::1
 
 # Allow NTP client access from these networks.
 {% if net_allow is defined and net_allow|length > 0 %}
+port 123
 {% for cidr in net_allow %}
 allow {{ cidr }}
 {% endfor %}
+{% else %}
+port 0
 {% endif %}
 
 # Deny NTP requests from these networks
