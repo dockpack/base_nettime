@@ -42,7 +42,9 @@
     - ntpd
 
 - name: Configure chrony key
-  when: net_allow | length > 0
+  when:
+    - net_allow is defined
+    - net_allow | length > 0
   lineinfile:
     path: "{{ nettime_keyfile }}"
     regexp: '^{{ nettime_keyid }} '
