@@ -1,12 +1,12 @@
 ---
 
 - name: Ensure firewall is installed
-  package:
+  ansible.builtin.package:
     name: "{{ nettime_firewall }}"
     state: present
 
 - name: Ensure firewall is running
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ nettime_firewall }}"
     state: started
   changed_when: false
