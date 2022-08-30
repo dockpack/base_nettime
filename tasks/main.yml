@@ -1,17 +1,17 @@
 ---
 - name: Include OS-specific variables.
   # yamllint disable-line rule:line-length
-  include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml"
   tags:
     - goss
 
 - name: Update repositories cache
   when: ansible_os_family == 'Debian'
-  apt:
+  ansible.builtin.apt:
     update_cache: true
 
 - name: Ensure packages are installed
-  package:
+  ansible.builtin.package:
     name: "{{ nettime_packages }}"
     state: present
   register: nettime_package
@@ -23,13 +23,13 @@
 
 - name: Enable systemd-timedated
   when: nettime_package.failed
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-timedated
     enabled: true
   notify: "Restart timedated"
 
 - name: Disable conflicting services
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     state: stopped
     enabled: false
@@ -45,7 +45,7 @@
   when:
     - net_allow is defined
     - net_allow | length > 0
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: "{{ nettime_keyfile }}"
     regexp: '^{{ nettime_keyid }} '
     line: "{{ chrony_key }}"
@@ -61,7 +61,7 @@
   notify: Restart chronyd
 
 - name: Is RTC time in local time zone
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     timedatectl|grep -c 'RTC in local TZ: yes'
   register: rtc_timezone
@@ -70,11 +70,11 @@
 
 - name: Use RTC time in UTC not local time zone
   when: rtc_timezone.stdout|int == 1
-  command: timedatectl set-local-rtc 0
+  ansible.builtin.command: timedatectl set-local-rtc 0
   changed_when: true
 
 - name: Configure chrony
-  template:
+  ansible.builtin.template:
     src: chrony.conf.j2
     dest: "{{ nettime_config }}"
     owner: root
@@ -86,14 +86,14 @@
   when:
     - ansible_os_family == 'Debian'
     - ansible_distribution_release == '11'
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/default/chrony
     regexp: '^DAEMON_OPTS='
     line: 'DAEMON_OPTS=""'
     state: present
 
 - name: Set drift
-  file:
+  ansible.builtin.file:
     path: "{{ nettime_driftfile }}"
     owner: "{{ nettime_user }}"
     group: "{{ nettime_group }}"
@@ -102,13 +102,13 @@
   changed_when: false
 
 - name: Enable chronyd
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ nettime_service }}"
     enabled: true
   notify: Start chronyd
 
 - name: Ensure goss directory exists
-  file:
+  ansible.builtin.file:
     path: /etc/goss.d
     state: directory
     owner: root
@@ -116,7 +116,7 @@
     mode: 0700
 
 - name: Copy goss tests template
-  template:
+  ansible.builtin.template:
     src: test_nettime.yml.j2
     dest: /etc/goss.d/test_nettime.yml
     owner: root

@@ -1,18 +1,18 @@
 ---
 
 - name: Restart chronyd
-  service:
+  ansible.builtin.service:
     name: "{{ nettime_service }}"
     enabled: true
     state: restarted
 
 - name: Start chronyd
-  service:
+  ansible.builtin.service:
     name: "{{ nettime_service }}"
     state: "{{ start_nettime_service }}"
 
 - name: Restart timedated
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-timedated
     daemon_reload: true
     enabled: true
