@@ -15,6 +15,7 @@ ntp_servers:
 ntp_peers: []
 
 # allow access from these subnets
+net_allow: []
 # net_allow:
 #   - '192.168.0.0/16'
 
