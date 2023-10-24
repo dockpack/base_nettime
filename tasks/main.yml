@@ -19,7 +19,7 @@
 
 - name: Manage firewall
   when: manage_firewall
-  include_tasks: firewall.yml
+  ansible.builtin.include_tasks: firewall.yml
 
 - name: Enable systemd-timedated
   when: nettime_package.failed
