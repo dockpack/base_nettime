@@ -16,7 +16,7 @@
     - ansible_os_family == 'Debian'
     - firewall_package == 'ufw'
     - net_allow|length > 0
-  ufw:
+  community.general.ufw:
     rule: allow
     port: '123'
     proto: udp
@@ -25,7 +25,7 @@
   when:
     - ansible_os_family == 'RedHat'
     - net_allow|length > 0
-  firewalld:
+  ansible.posix.firewalld:
     service: ntp
     immediate: true
     permanent: true

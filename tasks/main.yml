@@ -17,7 +17,7 @@
   register: nettime_package
   ignore_errors: true
 
-- name: manage firewall
+- name: Manage firewall
   when: manage_firewall
   include_tasks: firewall.yml
 
@@ -56,7 +56,7 @@
   notify: Restart chronyd
 
 - name: Set timezone
-  timezone:
+  community.general.timezone:
     name: "{{ timezone | default('UTC') }}"
   notify: Restart chronyd
 
